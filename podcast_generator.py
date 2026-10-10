@@ -4,9 +4,9 @@ Format: 1920x1080 Landscape Studio Broadcast
 Features:
 - Photorealistic studio host setting on the left (Shure SM7B, luxury acoustic wood lounge)
 - Dynamic auto-sized top pills (Channel wave indicator + Host live badge, NO text overflow)
-- Huge floating subtitle typography with active word karaoke highlighting (NO ugly boxes)
-- Sleek audio life indicators (pulsing voice wave + live studio indicator)
-- Real-time progress timeline
+- Bite-sized phrase & sentence subtitles with word-by-word active karaoke highlighting
+- Zero clipping, zero box overflow, zero emoji/tofu glitches
+- Clean podcast audio indicator and real-time progress timeline (NO club music visualizer)
 """
 import os, sys, json, math, subprocess, random, requests, re, asyncio
 from pathlib import Path
@@ -31,7 +31,7 @@ VIDEO_HEIGHT = 1080
 FPS = 30
 
 # Colors
-GOLD_ACCENT = (255, 215, 0)       # Vibrant Gold (#FFD700)
+GOLD_ACCENT = (255, 215, 0)       # Radiant Gold (#FFD700)
 WHITE = (255, 255, 255)
 MUTED_GOLD = (230, 215, 175)
 MUTED_WHITE = (220, 225, 235)
@@ -87,6 +87,31 @@ def clean_text(text):
     text = re.sub(r'\b(mm+|um+|uh+|ah+)\b', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
+
+def chunk_turn_text(text):
+    # Splits turn dialogue into punchy, bite-sized subtitle lines (5 to 9 words max)
+    raw_sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
+    chunks = []
+    for s in raw_sentences:
+        words = s.split()
+        if len(words) <= 9:
+            chunks.append(s)
+        else:
+            parts = [p.strip() for p in re.split(r'(?<=[,;:])\s+', s) if p.strip()]
+            if len(parts) > 1:
+                cur = ""
+                for p in parts:
+                    if len((cur + " " + p).split()) <= 8:
+                        cur = (cur + " " + p).strip()
+                    else:
+                        if cur: chunks.append(cur)
+                        cur = p
+                if cur: chunks.append(cur)
+            else:
+                mid = len(words) // 2
+                chunks.append(" ".join(words[:mid]))
+                chunks.append(" ".join(words[mid:]))
+    return chunks
 
 def generate_script_ai(topic_item, target_turns=4):
     prompt = f"""Write {target_turns} turns of a slow, clear English podcast between Emma and Andrew discussing: {topic_item['topic']}.
@@ -172,17 +197,16 @@ def load_base_studio_canvas():
         return canvas
 
 def draw_vector_mic(draw, center_x, center_y, color=GOLD_ACCENT):
-    # Vector microphone icon (no emoji tofu)
     draw.rounded_rectangle([(center_x - 6, center_y - 12), (center_x + 6, center_y + 4)], radius=4, fill=color)
     draw.arc([(center_x - 10, center_y - 4), (center_x + 10, center_y + 10)], start=0, end=180, fill=color, width=3)
     draw.line([(center_x, center_y + 10), (center_x, center_y + 16)], fill=color, width=3)
     draw.line([(center_x - 6, center_y + 16), (center_x + 6, center_y + 16)], fill=color, width=3)
 
-def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, total_dur, out_path):
+def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, frame_anim_idx, elapsed, total_dur, out_path):
     canvas = base_canvas.copy()
     draw = ImageDraw.Draw(canvas)
 
-    # 1. Top Left Channel Pill (Dynamic width calculation - NEVER overflows)
+    # 1. Top Left Channel Pill (Dynamic width - NEVER overflows)
     f_tab = load_font(28, bold=True)
     tb_tab = draw.textbbox((0, 0), CHANNEL_NAME, font=f_tab)
     tw_tab = tb_tab[2] - tb_tab[0]
@@ -195,18 +219,18 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
 
     draw.rounded_rectangle([(pill_l, pill_t), (pill_r, pill_b)], radius=20, fill=DARK_BAR, outline=GOLD_ACCENT, width=3)
     
-    # 6 animated voice wave bars
+    # 6 animated wave bars
     wave_x = pill_l + 30
     wave_cy = pill_t + pill_h // 2
     for b in range(6):
-        bh = int(14 + 14 * abs(math.sin(s_idx * 0.45 + b * 1.15)))
+        bh = int(14 + 14 * abs(math.sin(frame_anim_idx * 0.45 + b * 1.15)))
         bx = wave_x + b * 11
         draw.line([(bx, wave_cy - bh // 2), (bx, wave_cy + bh // 2)], fill=GOLD_ACCENT, width=3)
     
     draw.text((wave_x + 85, wave_cy), CHANNEL_NAME, fill=WHITE, font=f_tab, anchor="lm")
 
-    # 2. Top Right Speaker Pill (Dynamic width calculation - NEVER overflows)
-    speaker_name = "EMMA" if turn["speaker"] == "Host1" else "ANDREW"
+    # 2. Top Right Speaker Pill (Dynamic width - NEVER overflows)
+    speaker_name = "EMMA" if speaker == "Host1" else "ANDREW"
     spk_text = f"HOST: {speaker_name}"
     f_spk = load_font(28, bold=True)
     tb_s = draw.textbbox((0, 0), spk_text, font=f_spk)
@@ -220,7 +244,6 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
 
     draw.rounded_rectangle([(pill_s_l, pill_s_t), (pill_s_r, pill_s_b)], radius=20, fill=DARK_BAR, outline=GOLD_ACCENT, width=3)
     
-    # Vector mic icon & live pulse indicator
     mic_x = pill_s_l + 35
     mic_y = pill_s_t + pill_h // 2
     draw_vector_mic(draw, mic_x, mic_y, color=GOLD_ACCENT)
@@ -229,13 +252,10 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
     draw.ellipse([(dot_x - 4, mic_y - 4), (dot_x + 4, mic_y + 4)], fill=LIVE_GREEN)
     draw.text((dot_x + 18, mic_y), spk_text, fill=GOLD_ACCENT, font=f_spk, anchor="lm")
 
-    # 3. Clean Floating Typography (Constrained safe zone: x: 920 to 1840, y: 220 to 520)
-    raw_text = turn["text"]
-    words_raw = raw_text.split()
+    # 3. Subtitle Chunk Rendering (Safe area: x: 920 to 1840, y: 220 to 520)
+    words_raw = chunk_text.split()
     clean_words = [re.sub(r'[\*\*\.]', '', w).strip() for w in words_raw if w.strip()]
     if not clean_words: clean_words = ["Speak", "clearly"]
-
-    active_idx = min(len(clean_words) - 1, int((s_idx / max(1, total_subframes)) * len(clean_words)))
 
     f_sub = load_font(80, bold=True)
     max_sub_w = 920
@@ -257,22 +277,22 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
     if cur_line:
         lines.append(cur_line)
 
-    line_h = 110
+    line_h = 108
     total_h = len(lines) * line_h
     center_x = 1380
-    center_y = 350 # Perfectly elevated above desk & microphone arm
-    start_y = center_y - total_h // 2
+    center_y = 440
+    start_y = max(180, center_y - total_h // 2)
 
     # Soft radial dark glow behind text for 100% contrast against studio lighting
     glow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     gdraw = ImageDraw.Draw(glow)
     glow_w = max(sum(item[2] for item in l) for l in lines) + 160
-    glow_h = total_h + 130
+    glow_h = total_h + 100
     gdraw.rounded_rectangle([
-        (center_x - glow_w // 2, center_y - glow_h // 2),
-        (center_x + glow_w // 2, center_y + glow_h // 2)
-    ], radius=40, fill=(0, 0, 0, 160))
-    glow = glow.filter(ImageFilter.GaussianBlur(30))
+        (center_x - glow_w // 2, start_y + total_h // 2 - glow_h // 2),
+        (center_x + glow_w // 2, start_y + total_h // 2 + glow_h // 2)
+    ], radius=35, fill=(0, 0, 0, 160))
+    glow = glow.filter(ImageFilter.GaussianBlur(25))
     canvas.paste(glow, (0, 0), glow)
 
     # Deep drop shadow
@@ -285,7 +305,7 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
         for (w_i, clean_w, wl) in line:
             sdraw.text((lx + 4, ly + 5), clean_w, fill=(0, 0, 0, 255), font=f_sub)
             lx += wl
-    shadow = shadow.filter(ImageFilter.GaussianBlur(6))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(5))
     canvas.paste(shadow, (0, 0), shadow)
 
     # Foreground text with active spoken word highlighted in Gold
@@ -295,14 +315,14 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
         lx = center_x - lw // 2
         ly = start_y + l_i * line_h
         for (w_i, clean_w, wl) in line:
-            is_active = (w_i == active_idx)
+            is_active = (w_i == active_w_idx)
             col = GOLD_ACCENT if is_active else WHITE
             draw.text((lx, ly), clean_w, fill=col, font=f_sub)
             lx += wl
 
-    # Subtitle takeaway tagline underneath
-    f_tag = load_font(32, bold=False)
-    draw.text((center_x, start_y + total_h + 28), TAGLINE, fill=MUTED_GOLD, font=f_tag, anchor="mt")
+    # Subtitle tagline underneath
+    f_tag = load_font(30, bold=False)
+    draw.text((center_x, start_y + total_h + 24), TAGLINE, fill=MUTED_GOLD, font=f_tag, anchor="mt")
 
     # 4. Bottom Timeline & Progress Bar
     draw.line([(0, 1025), (VIDEO_WIDTH, 1025)], fill=(45, 50, 70), width=2)
@@ -329,24 +349,41 @@ def assemble_video(topic_item, turns, audio_list, run_dir):
 
     for i, (turn, audio) in enumerate(zip(turns, audio_list)):
         dur = audio["duration"]
-        words_count = len(turn["text"].split())
-        subframes_count = max(words_count, int(dur * 2))
-        fps_sub = subframes_count / dur
-
+        speaker = turn["speaker"]
+        chunks = chunk_turn_text(turn["text"])
+        total_turn_words = sum(len(c.split()) for c in chunks)
+        
         turn_frames_dir = frames_dir / f"turn_{i:03d}"
         turn_frames_dir.mkdir(parents=True, exist_ok=True)
 
-        for s in range(subframes_count):
-            frame_p = turn_frames_dir / f"frame_{s:04d}.png"
-            sub_elapsed = elapsed + (s / subframes_count) * dur
-            render_podcast_frame(base_canvas, turn, s, subframes_count, sub_elapsed, total_dur, str(frame_p))
+        frame_seq = 0
+        chunk_elapsed = elapsed
 
+        for c_idx, chunk_str in enumerate(chunks):
+            c_words = len(chunk_str.split())
+            c_dur = dur * (c_words / max(1, total_turn_words))
+            subframes_count = max(c_words, int(c_dur * 2))
+
+            for s in range(subframes_count):
+                frame_p = turn_frames_dir / f"frame_{frame_seq:04d}.png"
+                active_w_idx = min(c_words - 1, int((s / max(1, subframes_count)) * c_words))
+                sub_elapsed = chunk_elapsed + (s / max(1, subframes_count)) * c_dur
+                
+                render_podcast_chunk_frame(
+                    base_canvas, speaker, chunk_str, active_w_idx,
+                    frame_seq, sub_elapsed, total_dur, str(frame_p)
+                )
+                frame_seq += 1
+
+            chunk_elapsed += c_dur
+
+        fps_turn = frame_seq / max(0.5, dur)
         clip_p = clips_dir / f"clip_{i:03d}.mp4"
         input_pattern = str(turn_frames_dir / "frame_%04d.png")
 
         cmd = [
             "ffmpeg", "-y",
-            "-framerate", str(fps_sub),
+            "-framerate", str(fps_turn),
             "-i", input_pattern,
             "-i", audio["path"],
             "-c:v", "libx264",
