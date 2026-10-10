@@ -3,10 +3,11 @@ SLOW ENGLISH FLUENCY PODCAST LOUNGE - 16:9 FULL HD (1920x1080)
 Format: 1920x1080 Landscape Studio Broadcast
 Features:
 - Photorealistic studio host setting on the left (Shure SM7B, luxury acoustic wood lounge)
-- Dynamic auto-sized top pills (Channel wave indicator + Host live badge, NO text overflow)
-- Bite-sized phrase & sentence subtitles with word-by-word active karaoke highlighting
-- Zero clipping, zero box overflow, zero emoji/tofu glitches
-- Clean podcast audio indicator and real-time progress timeline (NO club music visualizer)
+- Dynamic auto-sized top pills (Channel name + Host live badge, NO text overflow, NO tofu emojis)
+- Frame-perfect subtitle synchronization using Microsoft Edge TTS SentenceBoundary timestamps
+- Bite-sized phrase & sentence subtitles with active word karaoke highlighting
+- Physically synchronized 16-band audio equalizer reactive to real voice speech frequencies
+- Fixed bottom branding tagline (NO jumping captions, NO time numbers)
 """
 import os, sys, json, math, subprocess, random, requests, re, asyncio
 from pathlib import Path
@@ -14,6 +15,8 @@ from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from dotenv import load_dotenv
 import edge_tts
+import numpy as np
+from pydub import AudioSegment
 
 if sys.platform == 'win32':
     try: sys.stdout.reconfigure(encoding='utf-8')
@@ -33,8 +36,7 @@ FPS = 30
 # Colors
 GOLD_ACCENT = (255, 215, 0)       # Radiant Gold (#FFD700)
 WHITE = (255, 255, 255)
-MUTED_GOLD = (230, 215, 175)
-MUTED_WHITE = (220, 225, 235)
+MUTED_GOLD = (235, 225, 200)
 DARK_BAR = (16, 18, 28, 230)
 LIVE_GREEN = (34, 197, 94)
 
@@ -88,31 +90,6 @@ def clean_text(text):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
-def chunk_turn_text(text):
-    # Splits turn dialogue into punchy, bite-sized subtitle lines (5 to 9 words max)
-    raw_sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
-    chunks = []
-    for s in raw_sentences:
-        words = s.split()
-        if len(words) <= 9:
-            chunks.append(s)
-        else:
-            parts = [p.strip() for p in re.split(r'(?<=[,;:])\s+', s) if p.strip()]
-            if len(parts) > 1:
-                cur = ""
-                for p in parts:
-                    if len((cur + " " + p).split()) <= 8:
-                        cur = (cur + " " + p).strip()
-                    else:
-                        if cur: chunks.append(cur)
-                        cur = p
-                if cur: chunks.append(cur)
-            else:
-                mid = len(words) // 2
-                chunks.append(" ".join(words[:mid]))
-                chunks.append(" ".join(words[mid:]))
-    return chunks
-
 def generate_script_ai(topic_item, target_turns=4):
     prompt = f"""Write {target_turns} turns of a slow, clear English podcast between Emma and Andrew discussing: {topic_item['topic']}.
 
@@ -165,13 +142,33 @@ async def generate_audio_files(turns, run_dir):
     audio_dir = run_dir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
     audio_list = []
+    
     for i, turn in enumerate(turns):
         mp3_p = audio_dir / f"turn_{i:03d}.mp3"
         spoken = re.sub(r'\*\*(.*?)\*\*', r'\1', turn["text"])
         voice = EMMA_VOICE if turn["speaker"] == "Host1" else ANDREW_VOICE
         comm = edge_tts.Communicate(spoken, voice, rate=VOICE_RATE)
-        await comm.save(str(mp3_p))
+        
+        sentences = []
+        audio_bytes = bytearray()
+        
+        async for chunk in comm.stream():
+            if chunk.get("type") == "SentenceBoundary":
+                start_s = chunk["offset"] / 10_000_000.0
+                dur_s = chunk["duration"] / 10_000_000.0
+                sentences.append({
+                    "text": chunk["text"],
+                    "start": start_s,
+                    "duration": dur_s,
+                    "end": start_s + dur_s
+                })
+            elif chunk.get("type") == "audio":
+                audio_bytes.extend(chunk["data"])
+                
+        with open(mp3_p, "wb") as f:
+            f.write(audio_bytes)
 
+        # Measure audio duration via ffprobe
         try:
             r = subprocess.run(
                 ["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -180,8 +177,65 @@ async def generate_audio_files(turns, run_dir):
             )
             duration = float(r.stdout.strip())
         except:
-            duration = 5.0
-        audio_list.append({"path": str(mp3_p), "duration": duration, "speaker": turn["speaker"]})
+            duration = sentences[-1]["end"] if sentences else 5.0
+
+        # Subdivide long sentences into short bite-sized clauses (max 8 words) for single-line subtitles
+        timed_phrases = []
+        for s in sentences:
+            s_text = s["text"]
+            s_start = s["start"]
+            s_dur = s["duration"]
+            words = s_text.split()
+            
+            if len(words) <= 8:
+                timed_phrases.append({
+                    "text": s_text,
+                    "start": s_start,
+                    "end": s_start + s_dur,
+                    "duration": s_dur
+                })
+            else:
+                # Split at comma / semicolon or midpoint
+                parts = [p.strip() for p in re.split(r'(?<=[,;:])\s+', s_text) if p.strip()]
+                if len(parts) > 1:
+                    total_w = sum(len(p.split()) for p in parts)
+                    cur_t = s_start
+                    for p in parts:
+                        p_w = len(p.split())
+                        p_dur = s_dur * (p_w / max(1, total_w))
+                        timed_phrases.append({
+                            "text": p,
+                            "start": cur_t,
+                            "end": cur_t + p_dur,
+                            "duration": p_dur
+                        })
+                        cur_t += p_dur
+                else:
+                    mid = len(words) // 2
+                    p1 = " ".join(words[:mid])
+                    p2 = " ".join(words[mid:])
+                    dur1 = s_dur * (len(p1.split()) / len(words))
+                    dur2 = s_dur - dur1
+                    timed_phrases.append({"text": p1, "start": s_start, "end": s_start + dur1, "duration": dur1})
+                    timed_phrases.append({"text": p2, "start": s_start + dur1, "end": s_start + s_dur, "duration": dur2})
+
+        # Load raw audio samples for 100% physical FFT frequency equalizer calculation
+        audio_seg = AudioSegment.from_file(str(mp3_p))
+        sample_rate = audio_seg.frame_rate
+        raw_samples = np.array(audio_seg.get_array_of_samples(), dtype=float)
+        if audio_seg.channels > 1:
+            raw_samples = raw_samples.reshape((-1, audio_seg.channels)).mean(axis=1)
+
+        audio_list.append({
+            "path": str(mp3_p),
+            "duration": duration,
+            "speaker": turn["speaker"],
+            "turn_text": turn["text"],
+            "timed_phrases": timed_phrases,
+            "raw_samples": raw_samples,
+            "sample_rate": sample_rate
+        })
+        
     return audio_list
 
 def load_base_studio_canvas():
@@ -202,7 +256,43 @@ def draw_vector_mic(draw, center_x, center_y, color=GOLD_ACCENT):
     draw.line([(center_x, center_y + 10), (center_x, center_y + 16)], fill=color, width=3)
     draw.line([(center_x - 6, center_y + 16), (center_x + 6, center_y + 16)], fill=color, width=3)
 
-def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, frame_anim_idx, elapsed, total_dur, out_path):
+def compute_physical_equalizer_bars(raw_samples, sample_rate, t_sec, num_bars=16):
+    """
+    Computes 16-band physical frequency spectrum directly from voice audio samples at timestamp t_sec.
+    When speaking: bars dance to actual vocal frequencies.
+    When pausing/silent: smoothly drops to 4px resting floor.
+    """
+    win_size = int(0.06 * sample_rate) # 60ms analysis window
+    center_idx = int(t_sec * sample_rate)
+    start_idx = max(0, center_idx - win_size // 2)
+    end_idx = min(len(raw_samples), center_idx + win_size // 2)
+    chunk = raw_samples[start_idx:end_idx]
+
+    if len(chunk) < 100:
+        return [4] * num_bars
+
+    rms = np.sqrt(np.mean(chunk**2))
+    if rms < 350.0:  # Silence / breath between words
+        return [4] * num_bars
+
+    fft_vals = np.abs(np.fft.rfft(chunk))
+    fft_freqs = np.fft.rfftfreq(len(chunk), 1.0 / sample_rate)
+
+    bar_heights = []
+    for b in range(num_bars):
+        f_min = 100 * (1.28 ** b)
+        f_max = 100 * (1.28 ** (b + 1))
+        mask = (fft_freqs >= f_min) & (fft_freqs < f_max)
+        if np.any(mask):
+            val = np.mean(fft_vals[mask])
+            h = int(min(1.0, val / 320000.0) * 44)
+        else:
+            h = 4
+        bar_heights.append(max(4, min(48, h)))
+
+    return bar_heights
+
+def render_podcast_frame(base_canvas, speaker, phrase_text, active_w_idx, eq_bars, frame_idx, elapsed, total_dur, out_path):
     canvas = base_canvas.copy()
     draw = ImageDraw.Draw(canvas)
 
@@ -219,11 +309,11 @@ def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, f
 
     draw.rounded_rectangle([(pill_l, pill_t), (pill_r, pill_b)], radius=20, fill=DARK_BAR, outline=GOLD_ACCENT, width=3)
     
-    # 6 animated wave bars
+    # 6 wave bars in channel pill
     wave_x = pill_l + 30
     wave_cy = pill_t + pill_h // 2
     for b in range(6):
-        bh = int(14 + 14 * abs(math.sin(frame_anim_idx * 0.45 + b * 1.15)))
+        bh = int(14 + 14 * abs(math.sin(frame_idx * 0.45 + b * 1.15)))
         bx = wave_x + b * 11
         draw.line([(bx, wave_cy - bh // 2), (bx, wave_cy + bh // 2)], fill=GOLD_ACCENT, width=3)
     
@@ -252,12 +342,12 @@ def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, f
     draw.ellipse([(dot_x - 4, mic_y - 4), (dot_x + 4, mic_y + 4)], fill=LIVE_GREEN)
     draw.text((dot_x + 18, mic_y), spk_text, fill=GOLD_ACCENT, font=f_spk, anchor="lm")
 
-    # 3. Subtitle Chunk Rendering (Safe area: x: 920 to 1840, y: 220 to 520)
-    words_raw = chunk_text.split()
+    # 3. Subtitle Phrase Rendering (Safe area: x: 920 to 1840, center_y = 350)
+    words_raw = phrase_text.split()
     clean_words = [re.sub(r'[\*\*\.]', '', w).strip() for w in words_raw if w.strip()]
     if not clean_words: clean_words = ["Speak", "clearly"]
 
-    f_sub = load_font(80, bold=True)
+    f_sub = load_font(78, bold=True)
     max_sub_w = 920
     lines = []
     cur_line = []
@@ -277,10 +367,10 @@ def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, f
     if cur_line:
         lines.append(cur_line)
 
-    line_h = 108
+    line_h = 105
     total_h = len(lines) * line_h
     center_x = 1380
-    center_y = 440
+    center_y = 350
     start_y = max(180, center_y - total_h // 2)
 
     # Soft radial dark glow behind text for 100% contrast against studio lighting
@@ -320,19 +410,37 @@ def render_podcast_chunk_frame(base_canvas, speaker, chunk_text, active_w_idx, f
             draw.text((lx, ly), clean_w, fill=col, font=f_sub)
             lx += wl
 
-    # Subtitle tagline underneath
-    f_tag = load_font(30, bold=False)
-    draw.text((center_x, start_y + total_h + 24), TAGLINE, fill=MUTED_GOLD, font=f_tag, anchor="mt")
+    # 4. Physically Synchronized Sound Equalizer Plate (Aesthetic podcast style)
+    # 16 smooth rounded bars below subtitle
+    eq_cx = 1380
+    eq_cy = 525
+    eq_w = 440
+    eq_h = 58
+    draw.rounded_rectangle([
+        (eq_cx - eq_w // 2, eq_cy - eq_h // 2),
+        (eq_cx + eq_w // 2, eq_cy + eq_h // 2)
+    ], radius=16, fill=(14, 16, 26, 220), outline=(255, 215, 0, 180), width=2)
 
-    # 4. Bottom Timeline & Progress Bar
+    num_b = 16
+    bw = 12
+    gap = 12
+    total_bars_w = num_b * bw + (num_b - 1) * gap
+    start_bx = eq_cx - total_bars_w // 2
+
+    for b_i in range(num_b):
+        bh = eq_bars[b_i] if b_i < len(eq_bars) else 4
+        bx = start_bx + b_i * (bw + gap)
+        by_top = eq_cy - bh // 2
+        by_bot = eq_cy + bh // 2
+        draw.rounded_rectangle([(bx, by_top), (bx + bw, by_bot)], radius=6, fill=GOLD_ACCENT)
+
+    # 5. Fixed Bottom Footer Ribbon (NO jumping captions, NO time numbers)
     draw.line([(0, 1025), (VIDEO_WIDTH, 1025)], fill=(45, 50, 70), width=2)
     ratio = min(1.0, elapsed / max(1.0, total_dur))
-    draw.line([(0, 1025), (int(VIDEO_WIDTH * ratio), 1025)], fill=GOLD_ACCENT, width=5)
+    draw.line([(0, 1025), (int(VIDEO_WIDTH * ratio), 1025)], fill=GOLD_ACCENT, width=4)
 
-    f_bot = load_font(26, bold=False)
-    draw.text((70, 1052), "Slow English Fluency Lounge • Natural Everyday English", fill=MUTED_WHITE, font=f_bot, anchor="lm")
-    time_str = f"{int(elapsed // 60):02d}:{int(elapsed % 60):02d} / {int(total_dur // 60):02d}:{int(total_dur % 60):02d}"
-    draw.text((1850, 1052), time_str, fill=GOLD_ACCENT, font=f_bot, anchor="rm")
+    f_foot = load_font(28, bold=False)
+    draw.text((center_x, 1052), TAGLINE, fill=MUTED_GOLD, font=f_foot, anchor="mm")
 
     canvas.convert("RGB").save(out_path, quality=95)
 
@@ -347,37 +455,49 @@ def assemble_video(topic_item, turns, audio_list, run_dir):
     elapsed = 0.0
     clips = []
 
-    for i, (turn, audio) in enumerate(zip(turns, audio_list)):
+    for i, audio in enumerate(audio_list):
         dur = audio["duration"]
-        speaker = turn["speaker"]
-        chunks = chunk_turn_text(turn["text"])
-        total_turn_words = sum(len(c.split()) for c in chunks)
-        
+        speaker = audio["speaker"]
+        timed_phrases = audio["timed_phrases"]
+        raw_samples = audio["raw_samples"]
+        sample_rate = audio["sample_rate"]
+
         turn_frames_dir = frames_dir / f"turn_{i:03d}"
         turn_frames_dir.mkdir(parents=True, exist_ok=True)
 
-        frame_seq = 0
-        chunk_elapsed = elapsed
+        # Video at 10 frames per second for ultra-fluid synchronization
+        fps_turn = 10
+        total_turn_frames = max(1, int(dur * fps_turn))
 
-        for c_idx, chunk_str in enumerate(chunks):
-            c_words = len(chunk_str.split())
-            c_dur = dur * (c_words / max(1, total_turn_words))
-            subframes_count = max(c_words, int(c_dur * 2))
+        for f_idx in range(total_turn_frames):
+            frame_p = turn_frames_dir / f"frame_{f_idx:04d}.png"
+            t_in_turn = (f_idx / total_turn_frames) * dur
+            sub_elapsed = elapsed + t_in_turn
 
-            for s in range(subframes_count):
-                frame_p = turn_frames_dir / f"frame_{frame_seq:04d}.png"
-                active_w_idx = min(c_words - 1, int((s / max(1, subframes_count)) * c_words))
-                sub_elapsed = chunk_elapsed + (s / max(1, subframes_count)) * c_dur
-                
-                render_podcast_chunk_frame(
-                    base_canvas, speaker, chunk_str, active_w_idx,
-                    frame_seq, sub_elapsed, total_dur, str(frame_p)
-                )
-                frame_seq += 1
+            # 1. Determine active phrase based on exact Edge TTS timestamps
+            active_phrase = timed_phrases[0] if timed_phrases else {"text": "Listen carefully", "start": 0, "end": dur}
+            for p in timed_phrases:
+                if p["start"] <= t_in_turn <= p["end"]:
+                    active_phrase = p
+                    break
+                elif t_in_turn > p["end"]:
+                    active_phrase = p
 
-            chunk_elapsed += c_dur
+            # 2. Determine active word inside that active phrase
+            p_text = active_phrase["text"]
+            p_words = p_text.split()
+            p_dur = max(0.2, active_phrase["end"] - active_phrase["start"])
+            rel_t = max(0.0, min(p_dur, t_in_turn - active_phrase["start"]))
+            active_w_idx = min(len(p_words) - 1, int((rel_t / p_dur) * len(p_words)))
 
-        fps_turn = frame_seq / max(0.5, dur)
+            # 3. Compute 16-band physical audio equalizer directly from real voice audio
+            eq_bars = compute_physical_equalizer_bars(raw_samples, sample_rate, t_in_turn, num_bars=16)
+
+            render_podcast_frame(
+                base_canvas, speaker, p_text, active_w_idx,
+                eq_bars, f_idx, sub_elapsed, total_dur, str(frame_p)
+            )
+
         clip_p = clips_dir / f"clip_{i:03d}.mp4"
         input_pattern = str(turn_frames_dir / "frame_%04d.png")
 
