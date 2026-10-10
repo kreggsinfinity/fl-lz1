@@ -171,8 +171,13 @@ def render_podcast_frame(base_canvas, turn, s_idx, total_subframes, elapsed, tot
     # 2. Clean Top Right Speaker Pill
     speaker_name = "EMMA" if turn["speaker"] == "Host1" else "ANDREW"
     font_spk = load_font(30, bold=True)
-    draw.rounded_rectangle([(1540, 40), (1860, 105)], radius=18, fill=DARK_BAR, outline=GOLD_ACCENT, width=3)
-    draw.text((1700, 72), f"🎙️ HOST: {speaker_name}", fill=GOLD_ACCENT, font=font_spk, anchor="mm")
+    draw.rounded_rectangle([(1520, 40), (1880, 105)], radius=18, fill=DARK_BAR, outline=GOLD_ACCENT, width=3)
+    # Draw crisp vector microphone
+    draw.rounded_rectangle([(1555, 62), (1567, 78)], radius=4, fill=GOLD_ACCENT)
+    draw.arc([(1551, 70), (1571, 84)], start=0, end=180, fill=GOLD_ACCENT, width=3)
+    draw.line([(1561, 84), (1561, 90)], fill=GOLD_ACCENT, width=3)
+    draw.line([(1555, 90), (1567, 90)], fill=GOLD_ACCENT, width=3)
+    draw.text((1585, 72), f"HOST: {speaker_name}", fill=GOLD_ACCENT, font=font_spk, anchor="lm")
 
     # 3. Huge Subtitle Typography in Safe Zone (x: 800 to 1800)
     raw_text = turn["text"]
