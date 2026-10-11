@@ -370,8 +370,8 @@ def render_podcast_frame(base_canvas, speaker, phrase_text, active_w_idx, eq_bar
     line_h = 105
     total_h = len(lines) * line_h
     center_x = 1380
-    center_y = 350
-    start_y = max(180, center_y - total_h // 2)
+    center_y = 325
+    start_y = max(170, center_y - total_h // 2)
 
     # Soft radial dark glow behind text for 100% contrast against studio lighting
     glow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
@@ -411,9 +411,9 @@ def render_podcast_frame(base_canvas, speaker, phrase_text, active_w_idx, eq_bar
             lx += wl
 
     # 4. Physically Synchronized Sound Equalizer Plate (Aesthetic podcast style)
-    # 16 smooth rounded bars below subtitle
+    # 16 smooth rounded bars below subtitle with generous breathing gap
     eq_cx = 1380
-    eq_cy = 525
+    eq_cy = 580
     eq_w = 440
     eq_h = 58
     draw.rounded_rectangle([
