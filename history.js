@@ -1,4 +1,14 @@
 // Daily Video History Log & Topic Registry
-const PODCAST_HISTORY = [];
+const PODCAST_HISTORY = [
+  {
+    "episode": 1,
+    "topic": "The Art of Unhurried Mornings",
+    "date": "2026-10-15T08:09:53.953606",
+    "duration_sec": 75.28,
+    "duration_min": 1.25,
+    "video_file": "podcast_ep1_20261015_080823.mp4",
+    "platform": "Facebook"
+  }
+];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
 if (typeof window !== 'undefined') { window.PODCAST_HISTORY = PODCAST_HISTORY; }

@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "episode": 1,
+    "topic": "The Art of Unhurried Mornings",
+    "date": "2026-10-15T08:09:53.953606",
+    "duration_sec": 75.28,
+    "duration_min": 1.25,
+    "video_file": "podcast_ep1_20261015_080823.mp4",
+    "platform": "Facebook"
+  }
+]
