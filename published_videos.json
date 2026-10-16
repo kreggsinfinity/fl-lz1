@@ -16,5 +16,14 @@
     "duration_min": 18.69,
     "video_file": "podcast_ep2_20261015_083217.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 3,
+    "topic": "Savoring Small Moments: The Gentle Power of Noticing",
+    "date": "2026-10-16T05:55:51.126058",
+    "duration_sec": 1205.57,
+    "duration_min": 20.09,
+    "video_file": "podcast_ep3_20261016_054126.mp4",
+    "platform": "Facebook"
   }
 ]
