@@ -49,6 +49,7 @@ TTS_RATE = "-15%"
 PAUSE_BETWEEN_TURNS = 0.50
 
 MAX_WORDS_PER_LINE = 4
+MAX_CHARS_PER_LINE = 32
 
 POLLINATIONS_API_KEY = os.environ.get("POLLINATIONS_API_KEY", "")
 POLLINATIONS_ENDPOINT = "https://gen.pollinations.ai/v1/chat/completions"
