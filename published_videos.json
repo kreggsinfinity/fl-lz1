@@ -25,5 +25,14 @@
     "duration_min": 20.09,
     "video_file": "podcast_ep3_20261016_054126.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 4,
+    "topic": "Whispers of Calm: Listening to Your Inner Landscape",
+    "date": "2026-10-17T05:44:00.302434",
+    "duration_sec": 1194.48,
+    "duration_min": 19.91,
+    "video_file": "podcast_ep4_20261017_052652.mp4",
+    "platform": "Facebook"
   }
 ]
