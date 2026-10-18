@@ -35,6 +35,15 @@ const PODCAST_HISTORY = [
     "duration_min": 19.91,
     "video_file": "podcast_ep4_20261017_052652.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 5,
+    "topic": "The Gentle Art of Letting Go: Finding Peace in Imperfection",
+    "date": "2026-10-18T05:52:57.969825",
+    "duration_sec": 1217.88,
+    "duration_min": 20.3,
+    "video_file": "podcast_ep5_20261018_053805.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
