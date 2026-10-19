@@ -43,5 +43,14 @@
     "duration_min": 20.3,
     "video_file": "podcast_ep5_20261018_053805.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 6,
+    "topic": "The Gentle Rhythm of Rest: Finding Stillness in Busy Lives",
+    "date": "2026-10-19T06:12:36.043584",
+    "duration_sec": 1226.33,
+    "duration_min": 20.44,
+    "video_file": "podcast_ep6_20261019_055600.mp4",
+    "platform": "Facebook"
   }
 ]
