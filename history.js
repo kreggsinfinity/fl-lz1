@@ -53,6 +53,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.44,
     "video_file": "podcast_ep6_20261019_055600.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 7,
+    "topic": "The Gentle Architecture of Thought: Building Calm Mental Spaces",
+    "date": "2026-10-20T06:02:48.221454",
+    "duration_sec": 1207.94,
+    "duration_min": 20.13,
+    "video_file": "podcast_ep7_20261020_054839.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
