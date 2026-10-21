@@ -62,6 +62,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.13,
     "video_file": "podcast_ep7_20261020_054839.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 8,
+    "topic": "The Quiet Language of Your Breath: A Pathway to Present Moment Awareness",
+    "date": "2026-10-21T06:04:59.563680",
+    "duration_sec": 1112.97,
+    "duration_min": 18.55,
+    "video_file": "podcast_ep8_20261021_055121.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
