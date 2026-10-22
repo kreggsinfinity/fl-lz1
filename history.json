@@ -70,5 +70,14 @@
     "duration_min": 18.55,
     "video_file": "podcast_ep8_20261021_055121.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 9,
+    "topic": "The Gentle Practice of Mindful Wandering: Exploring Inner Worlds with Ease",
+    "date": "2026-10-22T06:12:44.286383",
+    "duration_sec": 1203.0,
+    "duration_min": 20.05,
+    "video_file": "podcast_ep9_20261022_055509.mp4",
+    "platform": "Facebook"
   }
 ]
