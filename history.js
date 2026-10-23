@@ -80,6 +80,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.05,
     "video_file": "podcast_ep9_20261022_055509.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 10,
+    "topic": "The Gentle Echo: Listening to Your Own Wisdom",
+    "date": "2026-10-23T06:34:28.207653",
+    "duration_sec": 1258.22,
+    "duration_min": 20.97,
+    "video_file": "podcast_ep10_20261023_061754.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
