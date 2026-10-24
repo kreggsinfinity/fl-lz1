@@ -89,6 +89,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.97,
     "video_file": "podcast_ep10_20261023_061754.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 11,
+    "topic": "The Gentle Art of Pausing: Finding Clarity in the Space Between Thoughts",
+    "date": "2026-10-24T06:00:46.528830",
+    "duration_sec": 1300.56,
+    "duration_min": 21.68,
+    "video_file": "podcast_ep11_20261024_053613.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
