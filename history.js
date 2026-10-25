@@ -98,6 +98,15 @@ const PODCAST_HISTORY = [
     "duration_min": 21.68,
     "video_file": "podcast_ep11_20261024_053613.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 12,
+    "topic": "The Gentle Flow of Words: Cultivating Mindful Expression",
+    "date": "2026-10-25T06:07:48.724675",
+    "duration_sec": 1244.23,
+    "duration_min": 20.74,
+    "video_file": "podcast_ep12_20261025_055105.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
