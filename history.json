@@ -106,5 +106,14 @@
     "duration_min": 20.74,
     "video_file": "podcast_ep12_20261025_055105.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 13,
+    "topic": "The Gentle Embrace of Solitude: Finding Joy in Your Own Company",
+    "date": "2026-10-26T06:28:42.151868",
+    "duration_sec": 1196.9,
+    "duration_min": 19.95,
+    "video_file": "podcast_ep13_20261026_060841.mp4",
+    "platform": "Facebook"
   }
 ]
