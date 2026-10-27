@@ -115,5 +115,14 @@
     "duration_min": 19.95,
     "video_file": "podcast_ep13_20261026_060841.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 14,
+    "topic": "The Gentle Practice of 'Slow Seeing': Discovering Beauty in the Ordinary",
+    "date": "2026-10-27T06:28:48.686517",
+    "duration_sec": 1342.46,
+    "duration_min": 22.37,
+    "video_file": "podcast_ep14_20261027_060706.mp4",
+    "platform": "Facebook"
   }
 ]
