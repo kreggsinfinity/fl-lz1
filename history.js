@@ -125,6 +125,15 @@ const PODCAST_HISTORY = [
     "duration_min": 22.37,
     "video_file": "podcast_ep14_20261027_060706.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 15,
+    "topic": "The Gentle Art of 'Slow Reading': Unlocking Deeper Meaning and Calm",
+    "date": "2026-10-28T07:07:51.502510",
+    "duration_sec": 1171.73,
+    "duration_min": 19.53,
+    "video_file": "podcast_ep15_20261028_064522.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
