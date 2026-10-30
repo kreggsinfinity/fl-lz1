@@ -142,5 +142,14 @@
     "duration_min": 20.06,
     "video_file": "podcast_ep16_20261029_065245.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 17,
+    "topic": "The Gentle Art of 'Slow Listening': Tuning into the World Around You",
+    "date": "2026-10-30T07:08:10.104581",
+    "duration_sec": 1307.73,
+    "duration_min": 21.8,
+    "video_file": "podcast_ep17_20261030_065600.mp4",
+    "platform": "Facebook"
   }
 ]
