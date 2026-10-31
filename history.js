@@ -152,6 +152,15 @@ const PODCAST_HISTORY = [
     "duration_min": 21.8,
     "video_file": "podcast_ep17_20261030_065600.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 18,
+    "topic": "The Gentle Art of 'Slow Noticing': Cultivating Deeper Awareness in English",
+    "date": "2026-10-31T07:01:13.792830",
+    "duration_sec": 1145.76,
+    "duration_min": 19.1,
+    "video_file": "podcast_ep18_20261031_065014.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
