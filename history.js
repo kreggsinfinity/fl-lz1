@@ -161,6 +161,15 @@ const PODCAST_HISTORY = [
     "duration_min": 19.1,
     "video_file": "podcast_ep18_20261031_065014.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 19,
+    "topic": "The Gentle Art of 'Slow Reflection': Unpacking Your Day with Calm",
+    "date": "2026-11-01T07:32:18.490006",
+    "duration_sec": 1161.98,
+    "duration_min": 19.37,
+    "video_file": "podcast_ep19_20261101_071555.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
