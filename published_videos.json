@@ -169,5 +169,14 @@
     "duration_min": 19.37,
     "video_file": "podcast_ep19_20261101_071555.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 20,
+    "topic": "The Gentle Art of 'Slow Dreaming': Cultivating Restful Inner Worlds",
+    "date": "2026-11-02T07:48:05.827036",
+    "duration_sec": 1214.83,
+    "duration_min": 20.25,
+    "video_file": "podcast_ep20_20261102_073055.mp4",
+    "platform": "Facebook"
   }
 ]
