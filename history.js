@@ -179,6 +179,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.25,
     "video_file": "podcast_ep20_20261102_073055.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 21,
+    "topic": "The Gentle Art of 'Slow Sketching': Capturing Moments with Calm Observation",
+    "date": "2026-11-03T08:02:19.959907",
+    "duration_sec": 1255.39,
+    "duration_min": 20.92,
+    "video_file": "podcast_ep21_20261103_074508.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
