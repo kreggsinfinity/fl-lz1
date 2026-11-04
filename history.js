@@ -188,6 +188,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.92,
     "video_file": "podcast_ep21_20261103_074508.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 22,
+    "topic": "The Gentle Art of 'Slow Appreciating': Finding English Joy in Simple Pleasures",
+    "date": "2026-11-04T07:41:45.450146",
+    "duration_sec": 1231.17,
+    "duration_min": 20.52,
+    "video_file": "podcast_ep22_20261104_072412.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
