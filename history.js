@@ -197,6 +197,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.52,
     "video_file": "podcast_ep22_20261104_072412.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 23,
+    "topic": "The Gentle Art of 'Slow Questioning': Unlocking Deeper Understanding and Connection",
+    "date": "2026-11-05T08:03:05.689870",
+    "duration_sec": 1231.51,
+    "duration_min": 20.53,
+    "video_file": "podcast_ep23_20261105_074931.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
