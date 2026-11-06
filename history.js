@@ -206,6 +206,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.53,
     "video_file": "podcast_ep23_20261105_074931.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 24,
+    "topic": "The Gentle Art of 'Slow Exploring': Discovering New English Words with Ease",
+    "date": "2026-11-06T08:06:18.376382",
+    "duration_sec": 1209.26,
+    "duration_min": 20.15,
+    "video_file": "podcast_ep24_20261106_074945.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
