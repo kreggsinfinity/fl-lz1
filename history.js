@@ -215,6 +215,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.15,
     "video_file": "podcast_ep24_20261106_074945.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 25,
+    "topic": "The Gentle Art of 'Slow Translation': Bridging Worlds with Thoughtful Language",
+    "date": "2026-11-07T07:12:46.856957",
+    "duration_sec": 1272.38,
+    "duration_min": 21.21,
+    "video_file": "podcast_ep25_20261107_065724.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
