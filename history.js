@@ -224,6 +224,15 @@ const PODCAST_HISTORY = [
     "duration_min": 21.21,
     "video_file": "podcast_ep25_20261107_065724.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 26,
+    "topic": "The Gentle Art of 'Slow Understanding': Unpacking Nuance in English Conversation",
+    "date": "2026-11-08T07:15:46.958730",
+    "duration_sec": 1218.58,
+    "duration_min": 20.31,
+    "video_file": "podcast_ep26_20261108_070447.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
