@@ -233,6 +233,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.31,
     "video_file": "podcast_ep26_20261108_070447.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 27,
+    "topic": "The Gentle Art of 'Slow Journaling': Unlocking Your Inner English Voice",
+    "date": "2026-11-09T07:59:42.524064",
+    "duration_sec": 1147.97,
+    "duration_min": 19.13,
+    "video_file": "podcast_ep27_20261109_074825.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
