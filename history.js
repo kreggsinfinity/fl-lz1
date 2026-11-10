@@ -242,6 +242,15 @@ const PODCAST_HISTORY = [
     "duration_min": 19.13,
     "video_file": "podcast_ep27_20261109_074825.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 28,
+    "topic": "The Gentle Art of 'Slow Storytelling': Weaving Calm Narratives in English",
+    "date": "2026-11-10T08:32:14.689477",
+    "duration_sec": 1276.46,
+    "duration_min": 21.27,
+    "video_file": "podcast_ep28_20261110_081355.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
