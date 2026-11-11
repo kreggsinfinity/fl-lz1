@@ -251,6 +251,15 @@ const PODCAST_HISTORY = [
     "duration_min": 21.27,
     "video_file": "podcast_ep28_20261110_081355.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 29,
+    "topic": "How to Stop Translating in Your Head",
+    "date": "2026-11-11T07:53:24.811458",
+    "duration_sec": 1233.12,
+    "duration_min": 20.55,
+    "video_file": "podcast_ep29_20261111_073904.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
