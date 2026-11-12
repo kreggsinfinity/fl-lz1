@@ -260,6 +260,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.55,
     "video_file": "podcast_ep29_20261111_073904.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 30,
+    "topic": "The Gentle Art of 'Slow Observing': Seeing English Details Unfold",
+    "date": "2026-11-12T08:25:31.068472",
+    "duration_sec": 1283.71,
+    "duration_min": 21.4,
+    "video_file": "podcast_ep30_20261112_080720.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
