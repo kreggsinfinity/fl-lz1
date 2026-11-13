@@ -269,6 +269,15 @@ const PODCAST_HISTORY = [
     "duration_min": 21.4,
     "video_file": "podcast_ep30_20261112_080720.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 31,
+    "topic": "Finding Solace in Solitude",
+    "date": "2026-11-13T07:59:58.802279",
+    "duration_sec": 1169.4,
+    "duration_min": 19.49,
+    "video_file": "podcast_ep31_20261113_074331.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
