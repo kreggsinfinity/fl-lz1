@@ -277,5 +277,14 @@
     "duration_min": 19.49,
     "video_file": "podcast_ep31_20261113_074331.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 32,
+    "topic": "The Gentle Art of 'Slow Musing': Cultivating Thoughtful English Reflection",
+    "date": "2026-11-14T07:42:54.058569",
+    "duration_sec": 1141.75,
+    "duration_min": 19.03,
+    "video_file": "podcast_ep32_20261114_072940.mp4",
+    "platform": "Facebook"
   }
 ]
