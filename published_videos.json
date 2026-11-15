@@ -286,5 +286,14 @@
     "duration_min": 19.03,
     "video_file": "podcast_ep32_20261114_072940.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 33,
+    "topic": "The Gentle Art of 'Slow Pronunciation': Shaping Calm English Sounds",
+    "date": "2026-11-15T07:57:25.110553",
+    "duration_sec": 1177.68,
+    "duration_min": 19.63,
+    "video_file": "podcast_ep33_20261115_074244.mp4",
+    "platform": "Facebook"
   }
 ]
