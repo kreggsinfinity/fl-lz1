@@ -305,6 +305,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.41,
     "video_file": "podcast_ep34_20261116_074828.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 35,
+    "topic": "The Language of Kindness",
+    "date": "2026-11-17T09:14:56.536027",
+    "duration_sec": 1178.09,
+    "duration_min": 19.63,
+    "video_file": "podcast_ep35_20261117_085719.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
