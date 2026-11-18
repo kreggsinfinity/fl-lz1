@@ -314,6 +314,15 @@ const PODCAST_HISTORY = [
     "duration_min": 19.63,
     "video_file": "podcast_ep35_20261117_085719.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 36,
+    "topic": "The Gentle Art of 'Slow Connecting': Building Deeper English Understanding",
+    "date": "2026-11-18T08:37:10.121939",
+    "duration_sec": 1231.68,
+    "duration_min": 20.53,
+    "video_file": "podcast_ep36_20261118_082258.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
