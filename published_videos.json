@@ -331,5 +331,14 @@
     "duration_min": 20.64,
     "video_file": "podcast_ep37_20261119_083432.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 38,
+    "topic": "The Gentle Art of 'Slow Immersing': Letting English Naturally Unfold",
+    "date": "2026-11-20T08:31:03.526625",
+    "duration_sec": 1195.51,
+    "duration_min": 19.93,
+    "video_file": "podcast_ep38_20261120_081652.mp4",
+    "platform": "Facebook"
   }
 ]
