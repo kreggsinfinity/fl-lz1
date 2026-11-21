@@ -340,5 +340,14 @@
     "duration_min": 19.93,
     "video_file": "podcast_ep38_20261120_081652.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 39,
+    "topic": "The Gentle Art of 'Slow Unpacking': Delving Deeper into English Understanding",
+    "date": "2026-11-21T08:26:33.070015",
+    "duration_sec": 1242.79,
+    "duration_min": 20.71,
+    "video_file": "podcast_ep39_20261121_080844.mp4",
+    "platform": "Facebook"
   }
 ]
