@@ -350,6 +350,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.71,
     "video_file": "podcast_ep39_20261121_080844.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 40,
+    "topic": "The Gentle Art of 'Slow Wandering': Exploring English Vocabulary with Curiosity",
+    "date": "2026-11-22T08:07:21.977129",
+    "duration_sec": 1141.82,
+    "duration_min": 19.03,
+    "video_file": "podcast_ep40_20261122_075410.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
