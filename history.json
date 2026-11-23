@@ -358,5 +358,14 @@
     "duration_min": 19.03,
     "video_file": "podcast_ep40_20261122_075410.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 41,
+    "topic": "The Gentle Art of 'Slow Breathing': Finding Calm in Every English Word",
+    "date": "2026-11-23T09:02:15.742789",
+    "duration_sec": 1205.78,
+    "duration_min": 20.1,
+    "video_file": "podcast_ep41_20261123_084748.mp4",
+    "platform": "Facebook"
   }
 ]
