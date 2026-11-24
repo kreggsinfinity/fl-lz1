@@ -368,6 +368,15 @@ const PODCAST_HISTORY = [
     "duration_min": 20.1,
     "video_file": "podcast_ep41_20261123_084748.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 42,
+    "topic": "The Gentle Art of 'Slow Clarifying': Unlocking Clearer English Understanding",
+    "date": "2026-11-24T11:01:09.006250",
+    "duration_sec": 1162.7,
+    "duration_min": 19.38,
+    "video_file": "podcast_ep42_20261124_104702.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
