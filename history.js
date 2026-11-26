@@ -386,6 +386,15 @@ const PODCAST_HISTORY = [
     "duration_min": 19.57,
     "video_file": "podcast_ep43_20261125_094235.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 44,
+    "topic": "The Gentle Art of 'Slow Pausing': Embracing Silence for Deeper English Comprehension",
+    "date": "2026-11-26T09:37:34.992845",
+    "duration_sec": 1227.45,
+    "duration_min": 20.46,
+    "video_file": "podcast_ep44_20261126_091828.mp4",
+    "platform": "Facebook"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
