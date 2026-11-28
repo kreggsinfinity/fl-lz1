@@ -404,6 +404,15 @@ const PODCAST_HISTORY = [
     "duration_min": 18.96,
     "video_file": "podcast_ep45_20261127_093351.mp4",
     "platform": "Facebook"
+  },
+  {
+    "episode": 46,
+    "topic": "The Gentle Art of 'Slow Recharging': Finding English Energy in Quiet Moments",
+    "date": "2026-11-28T09:00:29.265591",
+    "duration_sec": 1168.92,
+    "duration_min": 19.48,
+    "video_file": "podcast_ep46_20261128_084711.mp4",
+    "platform": "None"
   }
 ];
 if (typeof module !== 'undefined' && module.exports) { module.exports = PODCAST_HISTORY; }
